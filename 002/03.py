@@ -33,3 +33,39 @@ Hello!!How-Are_You ! After Long Time !!!
 """
 
 
+"""
+
+
+# WAP to convert user given string into capitalize form 
+
+
+user_string = input("Enter a string : ")
+new_string=""
+i=1
+
+ascii_val = ord(user_string[0])
+
+if(ascii_val>=96 and ascii_val<=125):
+    new_string+=chr(ascii_val-32)
+    
+while i < len(user_string) :
+    if user_string[i]==' ':
+        i+=1
+        ascii_val = ord(user_string[i])
+        if(ascii_val>=96 and ascii_val<=125):
+            new_string=new_string + " " + chr(ascii_val-32)
+    else :
+        new_string+=user_string[i]
+        
+    i+=1
+    
+
+
+print(new_string)
+    
+
+
+
+"""
+
+
