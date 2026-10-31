@@ -37,7 +37,7 @@ if ($LASTEXITCODE -ne 0) { throw "Git add failed" }
 git diff --cached --quiet
 
 if ($LASTEXITCODE -eq 1) {
-    git commit -m "Add Python practice project files"
+    git commit -m "python string practice"
     if ($LASTEXITCODE -ne 0) { throw "Commit failed" }
 }
 
