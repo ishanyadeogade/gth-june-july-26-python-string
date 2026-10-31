@@ -1,0 +1,86 @@
+
+
+clone 
+=====
+cd /d D:\Workspace\workspace-vsc
+git clone https://github.com/ishanyadeogade/gth-june-july-26-python-string.git
+cd gth-june-july-26-python-string
+
+
+
+
+
+$ErrorActionPreference = "Stop"
+
+# Project configuration
+$projectPath = "D:\Workspace\workspace-vsc\gth-june-july-26-python-string"
+$repo = "gth-june-july-26-python-string"
+$remote = "https://github.com/ishanyadeogade/gth-june-july-26-python-string.git"
+
+# Verify project
+if (-not (Test-Path $projectPath -PathType Container)) {
+    throw "Project folder does not exist."
+}
+
+# Move into project
+Set-Location $projectPath
+
+Write-Host "Working directory: $(Get-Location)" -ForegroundColor Green
+
+# Verify Git
+git --version
+if ($LASTEXITCODE -ne 0) { throw "Git is not working." }
+
+# Initialize Git if needed
+if (-not (Test-Path ".git")) {
+    git init
+    if ($LASTEXITCODE -ne 0) { throw "Git initialization failed." }
+}
+
+# Set main branch
+git branch -M main
+if ($LASTEXITCODE -ne 0) { throw "Branch configuration failed." }
+
+# Stage files
+git add .
+if ($LASTEXITCODE -ne 0) { throw "Git add failed." }
+
+# Commit changes
+git diff --cached --quiet
+
+if ($LASTEXITCODE -eq 1) {
+    git commit -m "python string practice"
+    if ($LASTEXITCODE -ne 0) { throw "Commit failed." }
+}
+elseif ($LASTEXITCODE -ne 0) {
+    throw "Git diff failed."
+}
+else {
+    Write-Host "No changes to commit."
+}
+
+# Verify GitHub repository exists
+gh repo view "ishanyadeogade/$repo"
+
+if ($LASTEXITCODE -ne 0) {
+    throw "GitHub repository not accessible."
+}
+
+# Configure origin
+$existingRemote = git remote
+
+if ($existingRemote -contains "origin") {
+    git remote set-url origin $remote
+}
+else {
+    git remote add origin $remote
+}
+
+if ($LASTEXITCODE -ne 0) { throw "Remote configuration failed." }
+
+# Push
+git push -u origin main
+
+if ($LASTEXITCODE -ne 0) { throw "Git push failed." }
+
+Write-Host "Successfully pushed to GitHub!" -ForegroundColor Green
