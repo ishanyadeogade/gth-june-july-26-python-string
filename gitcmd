@@ -10,77 +10,62 @@ cd gth-june-july-26-python-string
 
 
 
+
 $ErrorActionPreference = "Stop"
 
-# Project configuration
 $projectPath = "D:\Workspace\workspace-vsc\gth-june-july-26-python-string"
-$repo = "gth-june-july-26-python-string"
 $remote = "https://github.com/ishanyadeogade/gth-june-july-26-python-string.git"
 
-# Verify project
-if (-not (Test-Path $projectPath -PathType Container)) {
-    throw "Project folder does not exist."
-}
-
-# Move into project
+# 1. Enter project
 Set-Location $projectPath
 
-Write-Host "Working directory: $(Get-Location)" -ForegroundColor Green
-
-# Verify Git
-git --version
-if ($LASTEXITCODE -ne 0) { throw "Git is not working." }
-
-# Initialize Git if needed
+# 2. Verify Git repository
 if (-not (Test-Path ".git")) {
     git init
-    if ($LASTEXITCODE -ne 0) { throw "Git initialization failed." }
+    if ($LASTEXITCODE -ne 0) { throw "Git init failed" }
 }
 
-# Set main branch
+# 3. Configure main branch
 git branch -M main
-if ($LASTEXITCODE -ne 0) { throw "Branch configuration failed." }
+if ($LASTEXITCODE -ne 0) { throw "Branch setup failed" }
 
-# Stage files
-git add .
-if ($LASTEXITCODE -ne 0) { throw "Git add failed." }
+# 4. Add all project files and folders
+git add -A
+if ($LASTEXITCODE -ne 0) { throw "Git add failed" }
 
-# Commit changes
+# 5. Commit changes if there are staged files
 git diff --cached --quiet
 
 if ($LASTEXITCODE -eq 1) {
-    git commit -m "python string practice"
-    if ($LASTEXITCODE -ne 0) { throw "Commit failed." }
-}
-elseif ($LASTEXITCODE -ne 0) {
-    throw "Git diff failed."
-}
-else {
-    Write-Host "No changes to commit."
+    git commit -m "Add Python practice project files"
+    if ($LASTEXITCODE -ne 0) { throw "Commit failed" }
 }
 
-# Verify GitHub repository exists
-gh repo view "ishanyadeogade/$repo"
-
-if ($LASTEXITCODE -ne 0) {
-    throw "GitHub repository not accessible."
+if ($LASTEXITCODE -gt 1) {
+    throw "Git diff failed"
 }
 
-# Configure origin
-$existingRemote = git remote
+# 6. Add origin if it does not exist
+$originExists = git remote | Where-Object { $_ -eq "origin" }
 
-if ($existingRemote -contains "origin") {
-    git remote set-url origin $remote
-}
-else {
+if (-not $originExists) {
     git remote add origin $remote
+    if ($LASTEXITCODE -ne 0) { throw "Adding remote failed" }
 }
 
-if ($LASTEXITCODE -ne 0) { throw "Remote configuration failed." }
+# 7. Correct origin URL
+git remote set-url origin $remote
+if ($LASTEXITCODE -ne 0) { throw "Setting remote failed" }
 
-# Push
+# 8. Verify remote
+Write-Host "`nConfigured remote:" -ForegroundColor Cyan
+git remote -v
+
+# 9. Push to GitHub
 git push -u origin main
 
-if ($LASTEXITCODE -ne 0) { throw "Git push failed." }
+if ($LASTEXITCODE -ne 0) {
+    throw "Push failed. Check the Git error above."
+}
 
-Write-Host "Successfully pushed to GitHub!" -ForegroundColor Green
+Write-Host "`nSUCCESS: GitHub push completed!" -ForegroundColor Green
